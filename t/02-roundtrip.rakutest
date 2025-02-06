@@ -1,0 +1,23 @@
+#!raku
+
+use Test;
+use Geo::Polyline;
+
+plan 6;
+
+my @coords = (
+    [ 38.5, -120.2 ],
+    [ 40.7, -120.95 ],
+    [ 43.252, -126.453 ]
+);
+
+my $polyline = polyline-encode(@coords);
+my @decoded = polyline-decode($polyline);
+is-approx @decoded[0][0], @coords[0][0], 'First latitude is correct';
+is-approx @decoded[0][1], @coords[0][1], 'First longitude is correct';
+is-approx @decoded[1][0], @coords[1][0], 'Second latitude is correct';
+is-approx @decoded[1][1], @coords[1][1], 'Second longitude is correct';
+is-approx @decoded[2][0], @coords[2][0], 'Third latitude is correct';
+is-approx @decoded[2][1], @coords[2][1], 'Third longitude is correct';
+
+done-testing;

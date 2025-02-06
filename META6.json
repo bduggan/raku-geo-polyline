@@ -1,0 +1,22 @@
+{
+  "name" : "Geo::Polyline",
+  "authors" : [
+    "Brian Duggan"
+  ],
+  "provides" : {
+    "Geo::Polyline" : "lib/Geo/Polyine.rakumod"
+  },
+  "build-depends" : [ ],
+  "depends" : [
+  ],
+  "description" : "Decode Google Maps Polyline strings",
+  "tags" : [
+    "geo"
+  ],
+  "license" : "MIT",
+  "raku" : "6.*",
+  "version" : "0.0.1",
+  "auth" : "zef:bduggan",
+  "source-url" : "git://github.com/bduggan/raku-geo-polyline.git"
+}
+
