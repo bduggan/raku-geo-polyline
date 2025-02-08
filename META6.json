@@ -4,12 +4,12 @@
     "Brian Duggan"
   ],
   "provides" : {
-    "Geo::Polyline" : "lib/Geo/Polyine.rakumod"
+    "Geo::Polyline" : "lib/Geo/Polyline.rakumod"
   },
   "build-depends" : [ ],
   "depends" : [
   ],
-  "description" : "Decode Google Maps Polyline strings",
+  "description" : "Encode and Decode Google Polyline strings",
   "tags" : [
     "geo"
   ],
