@@ -59,15 +59,12 @@ sub polyline-decode($encoded) is export {
 sub polyline-to-geojson($polyine) is export {
   my @coords = polyline-decode($polyine);
   %(
-      'type' => 'FeatureCollection',
-      'features' => [%(
-          'type' => 'Feature',
-          'geometry' => {
-              'type' => 'LineString',
-              'coordinates' => @coords
-          },
-          'properties' => {}
-      ),]
+    'type' => 'Feature',
+    'geometry' => {
+       'type' => 'LineString',
+       'coordinates' => @coords
+     },
+     'properties' => {}
   )
 }
 
