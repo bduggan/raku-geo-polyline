@@ -9,7 +9,7 @@
   "build-depends" : [ ],
   "depends" : [
   ],
-  "description" : "Encode and Decode Google Polyline strings",
+  "description" : "Encode and decode Google polyline strings",
   "tags" : [
     "geo"
   ],
