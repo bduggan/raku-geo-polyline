@@ -15,8 +15,8 @@ my @points = (
 );
 
 is polyline-encode(@points), "_p~iF~ps|U_ulLnnqC_mqNvxq`@", "points";
+diag "decoding";
 my @coords = polyline-decode('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
-
 for 0..^@coords {
   is-approx @coords[$_][0], @points[$_][0], "decode $_ lat";
   is-approx @coords[$_][1], @points[$_][1], "decode $_ lon";

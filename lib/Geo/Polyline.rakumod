@@ -1,34 +1,48 @@
 unit module Geo::Polyline;
 
 # Encode a single coordinate number to a string
-sub polyline-encode-coordinate(Numeric $num --> Str) is export {
-    my Int $value := ($num * 100_000).round;
-    my Int $binary = $value +< 1;
-    $binary = +^$binary if $value < 0;
-    my @chunks;
-    while $binary != 0 {
-        my Int $chunk = $binary +& 0x1F;
-        $binary +>= 5;
-        $chunk +|= 0x20 if $binary != 0;
-        @chunks.push: $chunk;
-    }
-    return join '', @chunks.map: (* + 63).chr;
+sub polyline-encode-coordinate(Numeric $num, Bool :$v6 --> Str) is export {
+  my $factor = $v6 ?? 1_000_000 !! 100_000;
+  my Int $value := ($num * $factor).round;
+  my Int $binary = $value +< 1;
+  $binary = +^$binary if $value < 0;
+  my @chunks;
+  while $binary != 0 {
+      my Int $chunk = $binary +& 0x1F;
+      $binary +>= 5;
+      $chunk +|= 0x20 if $binary != 0;
+      @chunks.push: $chunk;
+  }
+  return join '', @chunks.map: (* + 63).chr;
+}
+
+sub polyline6-encode-coordinate(Numeric $num) is export {
+  polyline-encode-coordinate($num, :v6);
 }
 
 # Decode a single coordinate number from a string
-sub polyline-decode-coordinate(Str $encoded --> Numeric) is export {
+sub polyline-decode-coordinate(Str $encoded, Bool :$v6 --> Numeric) is export {
+  my $factor := $v6 ?? 1_000_000 !! 100_000;
   my @chars = $encoded.comb;
-  return decode-and-shift(@chars) / 100_000;
+  return decode-and-shift(@chars) / $factor;
+}
+
+sub polyline6-decode-coordinate(Str $encoded) is export {
+  polyline-decode-coordinate($encoded, :v6);
 }
 
 # Encode an array of lon/lat coordinate pairs into a polyline string
-sub polyline-encode(@coords --> Str) is export {
+sub polyline-encode(@coords, Bool :$v6 --> Str) is export {
     my $result = "";
     for ( [0,0], |@coords).rotor( 2 => -1) -> ($prev, $coord) {
       my ($dlon, $dlat) = $coord »-» $prev;
-      $result ~= polyline-encode-coordinate($_) for $dlat, $dlon;
+      $result ~= polyline-encode-coordinate($_, :$v6) for $dlat, $dlon;
     }
     return $result;
+}
+
+sub polyline6-encode(@coords) is export {
+  polyline-encode(@coords, :v6);
 }
 
 sub decode-and-shift(@chars) {
@@ -44,20 +58,37 @@ sub decode-and-shift(@chars) {
 }
 
 # Decode a polyline string into an array of lon/lat coordinate pairs
-sub polyline-decode($encoded) is export {
+sub polyline-decode($encoded, Bool $v6 = False) is export {
+  my $factor := $v6 ?? 1_000_000 !! 100_000;
   my @coords;
   my ($lat, $lng) = 0, 0;
   my @chars = $encoded.comb;
   while @chars {
     $lat += decode-and-shift(@chars);
     $lng += decode-and-shift(@chars);
-    @coords.push: ( $lng/100_000, $lat/100_000 );
+    @coords.push: ( $lng/$factor, $lat/$factor );
   }
   return @coords;
 }
 
+sub polyline6-decode($encoded) is export {
+  polyline-decode($encoded, True);
+}
+
 sub polyline-to-geojson($polyine) is export {
   my @coords = polyline-decode($polyine);
+  %(
+    'type' => 'Feature',
+    'geometry' => {
+       'type' => 'LineString',
+       'coordinates' => @coords
+     },
+     'properties' => {}
+  )
+}
+
+sub polyline6-to-geojson($polyine) is export {
+  my @coords = polyline6-decode($polyine);
   %(
     'type' => 'Feature',
     'geometry' => {
