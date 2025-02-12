@@ -1,0 +1,21 @@
+use Geo::Polyline;
+use Test;
+plan 10;
+
+is polyline6-encode([]), "", "empty";
+my $enc = polyline6-encode-coordinate(-179.9832104);
+ok $enc, "encode -179.9832104";
+is-approx polyline6-decode-coordinate($enc), -179.9832104, "decode -179.9832104";
+my @points = (
+    [-120.2, 38.5],
+    [-120.95, 40.7],
+    [-126.453, 43.252]
+);
+
+$enc = polyline6-encode(@points);
+ok $enc, "encode";
+my @coords = polyline6-decode($enc);
+for 0..^@coords {
+  is-approx @coords[$_][0], @points[$_][0], "decode $_ lat";
+  is-approx @coords[$_][1], @points[$_][1], "decode $_ lon";
+}
