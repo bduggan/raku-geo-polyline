@@ -1,3 +1,6 @@
+0.0.3 2025-02-13
+   Support polyline6
+
 0.0.2 2025-02-08
    Make geojson a feature, not a featurecollection
 
