@@ -65,6 +65,7 @@ sub polyline-decode($encoded, Bool $v6 = False) is export {
   my @chars = $encoded.comb;
   while @chars {
     $lat += decode-and-shift(@chars);
+    last unless @chars;
     $lng += decode-and-shift(@chars);
     @coords.push: ( $lng/$factor, $lat/$factor );
   }

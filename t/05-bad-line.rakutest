@@ -1,0 +1,7 @@
+use Geo::Polyline;
+use Test;
+plan 2;
+
+# A single encoded coordinate (no lng pair) should not crash
+lives-ok { polyline-decode("_p~iF") }, "truncated input does not die";
+lives-ok { polyline6-decode("_p~iF") }, "truncated input does not die (v6)";
