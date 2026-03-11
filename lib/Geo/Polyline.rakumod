@@ -53,16 +53,16 @@ sub decode-and-shift(@chars) {
       $shift += 5;
       last unless $b >= 0x20;
     }
-    my $d = ($result +& 1) ?? -(($result +> 1)) !! ($result +> 1);
+    my $d = ($result +& 1) ?? -(($result +> 1) + 1) !! ($result +> 1);
     return $d;
 }
 
 # Decode a polyline string into an array of lon/lat coordinate pairs
-sub polyline-decode($encoded, Bool $v6 = False) is export {
+sub polyline-decode($encoded, Bool $v6 = False, Bool :$unescape = False) is export {
   my $factor := $v6 ?? 1_000_000 !! 100_000;
   my @coords;
   my ($lat, $lng) = 0, 0;
-  my @chars = $encoded.comb;
+  my @chars = ($unescape ?? $encoded.subst('\\\\', '\\', :g) !! $encoded).comb;
   while @chars {
     $lat += decode-and-shift(@chars);
     last unless @chars;
@@ -72,12 +72,12 @@ sub polyline-decode($encoded, Bool $v6 = False) is export {
   return @coords;
 }
 
-sub polyline6-decode($encoded) is export {
-  polyline-decode($encoded, True);
+sub polyline6-decode($encoded, Bool :$unescape = False) is export {
+  polyline-decode($encoded, True, :$unescape);
 }
 
-sub polyline-to-geojson($polyine) is export {
-  my @coords = polyline-decode($polyine);
+sub polyline-to-geojson($polyine, Bool :$unescape = False) is export {
+  my @coords = polyline-decode($polyine, :$unescape);
   %(
     'type' => 'Feature',
     'geometry' => {
@@ -88,8 +88,8 @@ sub polyline-to-geojson($polyine) is export {
   )
 }
 
-sub polyline6-to-geojson($polyine) is export {
-  my @coords = polyline6-decode($polyine);
+sub polyline6-to-geojson($polyine, Bool :$unescape = False) is export {
+  my @coords = polyline6-decode($polyine, :$unescape);
   %(
     'type' => 'Feature',
     'geometry' => {
@@ -138,9 +138,15 @@ Encode an array of lon/lat coordinate pairs into a polyline string.
 
 Decode a polyline string into an array of lon/lat coordinate pairs.
 
+Pass C<:unescape> to replace C<\\> with C<\> in the input before decoding.
+This is useful when the polyline string was stored in an escaped context
+(e.g. copied from a JSON string or URL) where backslashes are doubled.
+
 =head2 polyline-to-geojson, polyline6-to-geojson
 
 Convert a polyline string into a GeoJSON object.
+
+Accepts C<:unescape> (see C<polyline-decode>).
 
 =head2 polyline-encode-coordinate, polyline-decode-coordinate, polyline6-encode-coordinate, polyline6-decode-coordinate
 

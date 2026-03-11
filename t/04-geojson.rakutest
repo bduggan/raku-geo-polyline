@@ -8,11 +8,11 @@ plan 7;
 my $geo = polyline-to-geojson('_p~iF~ps|U_ulLnnqC_mqNvxq`@');
 
 is $geo<geometry><type>, 'LineString', 'type';
-is $geo<geometry><coordinates>[0][0], -120.19999, 'lon';
+is $geo<geometry><coordinates>[0][0], -120.2, 'lon';
 is $geo<geometry><coordinates>[0][1], 38.5, 'lat';
-is $geo<geometry><coordinates>[1][0], -120.94998, 'lon';
+is $geo<geometry><coordinates>[1][0], -120.95, 'lon';
 is $geo<geometry><coordinates>[1][1], 40.7, 'lat';
-is $geo<geometry><coordinates>[2][0], -126.45297, 'lon';
+is $geo<geometry><coordinates>[2][0], -126.453, 'lon';
 is $geo<geometry><coordinates>[2][1], 43.252, 'lat';
 
 done-testing;

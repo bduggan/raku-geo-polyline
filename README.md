@@ -41,10 +41,14 @@ polyline-decode, polyline6-decode
 
 Decode a polyline string into an array of lon/lat coordinate pairs.
 
+Pass `:unescape` to replace `\\` with `\` in the input before decoding. This is useful when the polyline string was stored in an escaped context (e.g. copied from a JSON string or URL) where backslashes are doubled.
+
 polyline-to-geojson, polyline6-to-geojson
 -----------------------------------------
 
 Convert a polyline string into a GeoJSON object.
+
+Accepts `:unescape` (see `polyline-decode`).
 
 polyline-encode-coordinate, polyline-decode-coordinate, polyline6-encode-coordinate, polyline6-decode-coordinate
 ----------------------------------------------------------------------------------------------------------------

@@ -6,7 +6,7 @@ is polyline-encode([]), "", "empty";
 is polyline-encode-coordinate(-179.9832104), "`~oia@", "encode -179.9832104";
 is polyline-encode-coordinate(38.5), "_p~iF", "encode 38.5";
 is-approx polyline-decode-coordinate("`~oia@"), -179.9832104, "decode -179.9832104";
-is polyline-decode-coordinate("`~oia@"), -179.9832, "decode -179.983";
+is polyline-decode-coordinate("`~oia@"), -179.98321, "decode -179.983";
 is polyline-decode-coordinate("_p~iF"), 38.5, "decode 38.5";
 my @points = (
     [-120.2, 38.5],
