@@ -1,3 +1,7 @@
+0.0.5 2026-10-13
+  fix off by one in polyline decoding
+  add unescape option
+
 0.0.4 2026-03-10
   fix edge case
 
